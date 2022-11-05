@@ -11,7 +11,7 @@ import (
 type WordSet struct {
 	ID        int            `gorm:"primaryKey" json:"id"`
 	Title     string         `gorm:"type:varchar(255)" json:"title"`
-	Cover     string         `gorm:"type:varchar(255" json:"cover"`
+	Cover     string         `gorm:"type:varchar(255)" json:"cover"`
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
@@ -20,7 +20,7 @@ type WordSet struct {
 type Word struct {
 	ID        int            `gorm:"primaryKey" json:"id"`
 	En        string         `gorm:"type:varchar(255)" json:"en"`
-	Cn        string         `gorm:"type:varchar(255" json:"cn"`
+	Cn        string         `gorm:"type:varchar(255)" json:"cn"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 	WordSetID int            `json:"wordSetID"`
 }
