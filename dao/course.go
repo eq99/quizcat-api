@@ -11,9 +11,9 @@ import (
 type Exercise struct {
 	ID        int            `gorm:"primaryKey" json:"id"`
 	Title     string         ` gorm:"type:varchar(255)" json:"title"`
-	QuizNum   int            `gorm:"default:0" json:"quiz_num"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
+	QuizNum   int            `gorm:"default:0" json:"quizNum"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
@@ -23,10 +23,10 @@ type Quiz struct {
 	Level      int            `gorm:"default:1" json:"level"`
 	Content    string         `gorm:"type:text" json:"content"`
 	Solution   string         `gorm:"type:text" json:"solution"`
-	CreatedAt  time.Time      `json:"created_at"`
-	UpdatedAt  time.Time      `json:"updated_at"`
+	CreatedAt  time.Time      `json:"createdAt"`
+	UpdatedAt  time.Time      `json:"updatedAt"`
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
-	ExerciseID int            `json:"exercise_id"`
+	ExerciseID int            `json:"exerciseID"`
 }
 
 func GetExercises() ([]*Exercise, error) {

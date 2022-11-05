@@ -20,6 +20,8 @@ func main() {
 			if err := app.DB().AutoMigrate(
 				&dao.Exercise{},
 				&dao.Quiz{},
+				&dao.WordSet{},
+				&dao.Word{},
 			); err != nil {
 				fmt.Printf("migrate database failed:\n%v\n", err)
 			}

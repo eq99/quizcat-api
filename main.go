@@ -26,5 +26,8 @@ func main() {
 	apiRouter.Get("exercises/:exerciseID", api.GetExerciseByID)
 	apiRouter.Get("quizzes", api.GetQuizzesByExerciseID)
 
+	apiRouter.Get("wordsets", api.GetWordSets)
+	apiRouter.Get("wordsets/:setID", api.GetWordSet)
+
 	app.GetApp().Run()
 }
