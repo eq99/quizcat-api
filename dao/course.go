@@ -32,7 +32,7 @@ type Quiz struct {
 func GetExercises() ([]*Exercise, error) {
 	var exercises []*Exercise
 
-	if err := app.DB().Find(&exercises).Error; err != nil {
+	if err := app.DB().Order("created_at desc").Find(&exercises).Error; err != nil {
 		return nil, err
 	}
 
