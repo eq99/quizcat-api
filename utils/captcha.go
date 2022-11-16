@@ -8,7 +8,7 @@ import (
 
 func GenCaptcha() string {
 	digits := []byte("0123456789")
-	b := make([]byte, 6)
+	b := make([]byte, 4)
 	rand.Seed(time.Now().UnixNano())
 	for i := range b {
 		b[i] = digits[rand.Intn(10)]

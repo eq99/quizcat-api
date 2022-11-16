@@ -18,6 +18,8 @@ func main() {
 		Long:  `Gorm auto migration. See More: https://gorm.io/docs/migration.html#Auto-Migration`,
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := app.DB().AutoMigrate(
+				&dao.User{},
+				&dao.Token{},
 				&dao.Exercise{},
 				&dao.Quiz{},
 				&dao.WordSet{},

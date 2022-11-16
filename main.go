@@ -20,14 +20,17 @@ func main() {
 	}))
 
 	// apis
-	apiRouter := router.Group("/api/quizcat/")
+	apiRouter := router.Group("/api/quizcat")
 
-	apiRouter.Get("exercises", api.GetExerciseList)
-	apiRouter.Get("exercises/:exerciseID", api.GetExerciseByID)
-	apiRouter.Get("quizzes", api.GetQuizzesByExerciseID)
+	apiRouter.Get("/exercises", api.GetExerciseList)
+	apiRouter.Get("/exercises/:exerciseID", api.GetExerciseByID)
+	apiRouter.Get("/quizzes", api.GetQuizzesByExerciseID)
 
-	apiRouter.Get("wordsets", api.GetWordSets)
-	apiRouter.Get("wordsets/:setID", api.GetWordSet)
+	apiRouter.Get("/wordsets", api.GetWordSets)
+	apiRouter.Get("/wordsets/:setID", api.GetWordSet)
+
+	apiRouter.Post("/captcha", api.SendCaptchaByEmail)
+	apiRouter.Post("/signin", api.AuthWithEmail)
 
 	app.GetApp().Run()
 }
