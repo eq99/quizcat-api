@@ -70,18 +70,19 @@ func GetQuizzesByExerciseID(eid int) ([]*Quiz, error) {
 	return quizzes, nil
 }
 
-type CreateSolutionForm struct {
+type SaveSolutionForm struct {
 	Content string `validate:"required,min:1,max:4000" form:"content" json:"content"`
 	QuizID  int    `validate:"required" form:"quizID" json:"quizID"`
 }
 
-func GetOrCreateSolution(form *CreateSolutionForm, userID int) (*Solution, error) {
-	solution := &Solution{
-		UserID: userID,
-		QuizID: form.QuizID,
-	}
+func GetOrSaveSolution(form *SaveSolutionForm, userID int) (*Solution, error) {
+	solution := &Solution{}
 
-	if err := app.DB().FirstOrCreate(solution, Solution{Content: form.Content}).Error; err != nil {
+	if err := app.DB().
+		Where("user_id = ? AND quiz_id = ?", userID, form.QuizID).
+		Assign(Solution{Content: form.Content}).
+		FirstOrCreate(&solution).
+		Error; err != nil {
 		return nil, err
 	}
 

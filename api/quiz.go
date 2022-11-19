@@ -59,17 +59,17 @@ func GetQuizzesByExerciseID(c *fiber.Ctx) error {
 	return c.JSON(quizzes)
 }
 
-func GetOrCreateSolution(c *fiber.Ctx) error {
+func GetOrSaveSolution(c *fiber.Ctx) error {
 	user := c.Locals("user").(*dao.User)
 
-	form := &dao.CreateSolutionForm{}
+	form := &dao.SaveSolutionForm{}
 	if err := c.BodyParser(form); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"msg": err.Error(),
 		})
 	}
 
-	if _, err := dao.GetOrCreateSolution(form, user.ID); err != nil {
+	if _, err := dao.GetOrSaveSolution(form, user.ID); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"msg": "save solution failed",
 		})

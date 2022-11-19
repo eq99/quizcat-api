@@ -26,7 +26,7 @@ func main() {
 	apiRouter.Get("/exercises", api.GetExerciseList)
 	apiRouter.Get("/exercises/:exerciseID", api.GetExerciseByID)
 	apiRouter.Get("/quizzes", api.GetQuizzesByExerciseID)
-	apiRouter.Post("/solutions", m.Auth, api.GetOrCreateSolution)
+	apiRouter.Post("/solutions", m.Auth, api.GetOrSaveSolution)
 	apiRouter.Get("/solutions", api.GetSolutionsByQuizId)
 
 	apiRouter.Get("/wordsets", api.GetWordSets)
