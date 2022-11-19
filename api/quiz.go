@@ -58,3 +58,44 @@ func GetQuizzesByExerciseID(c *fiber.Ctx) error {
 
 	return c.JSON(quizzes)
 }
+
+func GetOrCreateSolution(c *fiber.Ctx) error {
+	user := c.Locals("user").(*dao.User)
+
+	form := &dao.CreateSolutionForm{}
+	if err := c.BodyParser(form); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": err.Error(),
+		})
+	}
+
+	if _, err := dao.GetOrCreateSolution(form, user.ID); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"msg": "save solution failed",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"msg": "ok",
+	})
+}
+
+func GetSolutionsByQuizId(c *fiber.Ctx) error {
+	quizID, err := strconv.Atoi(c.Query("qid"))
+	if err != nil {
+		app.Log().Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": "parse qid faild",
+		})
+	}
+
+	solutions, err := dao.GetSolutionsByQuizID(quizID)
+	if err != nil {
+		app.Log().Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"msg": "get solutions failed",
+		})
+	}
+
+	return c.JSON(solutions)
+}

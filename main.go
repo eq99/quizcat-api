@@ -7,6 +7,7 @@ import (
 
 	"quizcat/api"
 	"quizcat/app"
+	m "quizcat/middlewares"
 )
 
 func main() {
@@ -25,12 +26,15 @@ func main() {
 	apiRouter.Get("/exercises", api.GetExerciseList)
 	apiRouter.Get("/exercises/:exerciseID", api.GetExerciseByID)
 	apiRouter.Get("/quizzes", api.GetQuizzesByExerciseID)
+	apiRouter.Post("/solutions", m.Auth, api.GetOrCreateSolution)
+	apiRouter.Get("/solutions", api.GetSolutionsByQuizId)
 
 	apiRouter.Get("/wordsets", api.GetWordSets)
 	apiRouter.Get("/wordsets/:setID", api.GetWordSet)
 
 	apiRouter.Post("/captcha", api.SendCaptchaByEmail)
 	apiRouter.Post("/signin", api.AuthWithEmail)
+	apiRouter.Get("/signout", api.Signout)
 
 	app.GetApp().Run()
 }

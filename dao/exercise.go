@@ -29,6 +29,17 @@ type Quiz struct {
 	ExerciseID int            `json:"exerciseID"`
 }
 
+type Solution struct {
+	ID        int            `gorm:"primaryKey" json:"id"`
+	Score     int            `gorm:"default:0" json:"score"`
+	Content   string         `gorm:"type:text" json:"content"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	QuizID    int            `json:"quizID"`
+	UserID    int            `json:"userID"`
+}
+
 func GetExercises() ([]*Exercise, error) {
 	var exercises []*Exercise
 
@@ -57,4 +68,48 @@ func GetQuizzesByExerciseID(eid int) ([]*Quiz, error) {
 	}
 
 	return quizzes, nil
+}
+
+type CreateSolutionForm struct {
+	Content string `validate:"required,min:1,max:4000" form:"content" json:"content"`
+	QuizID  int    `validate:"required" form:"quizID" json:"quizID"`
+}
+
+func GetOrCreateSolution(form *CreateSolutionForm, userID int) (*Solution, error) {
+	solution := &Solution{
+		UserID: userID,
+		QuizID: form.QuizID,
+	}
+
+	if err := app.DB().FirstOrCreate(solution, Solution{Content: form.Content}).Error; err != nil {
+		return nil, err
+	}
+
+	return solution, nil
+}
+
+type SolutionWithUser struct {
+	ID        int       `json:"id"`
+	Score     int       `json:"score"`
+	Content   string    `json:"content"`
+	QuizID    int       `json:"quizID"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Username  string    `json:"username"`
+	Avatar    string    `json:"avatar"`
+	UserID    int       `json:"userid"`
+}
+
+func GetSolutionsByQuizID(quizID int) ([]*SolutionWithUser, error) {
+	var solutions []*SolutionWithUser
+
+	if err := app.DB().
+		Table("solutions").
+		Where("quiz_id = ?", quizID).
+		Joins("Join users ON users.id = solutions.user_id ").
+		Select("solutions.id, solutions.score, solutions.content, solutions.quiz_id, solutions.updated_at, users.name as username, users.avatar, users.id as user_id").
+		Scan(&solutions).Error; err != nil {
+		return nil, err
+	}
+
+	return solutions, nil
 }

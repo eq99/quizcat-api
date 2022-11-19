@@ -28,14 +28,13 @@ type User struct {
 }
 
 type Token struct {
-	ID        int            `gorm:"primaryKey" json:"id"`
-	Value     uuid.UUID      `gorm:"index;type:uuid" json:"value"`
-	Client    string         `json:"client"`
-	UserID    int            `gorm:"unique" json:"userId"` // in this version, only one token is ok
-	User      *User          `json:"user"`
-	CreatedAt time.Time      `json:"createdAt"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	ID        int       `gorm:"primaryKey" json:"id"`
+	Value     uuid.UUID `gorm:"index;type:uuid" json:"value"`
+	Client    string    `json:"client"`
+	UserID    int       `gorm:"unique" json:"userId"` // in this version, only one token is ok
+	User      *User     `json:"user"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func DeleteToken(token string) ([]*Token, error) {
@@ -97,6 +96,10 @@ func CheckAuthToken(c *fiber.Ctx) (*Token, error) {
 	return &token, nil
 }
 
+type EmailForm struct {
+	Email string `validate:"required" form:"email" json:"email"`
+}
+
 func AuthUserByEmail(email string) (*Token, error) {
 	name := uuid.New().String() // use uuid as default name
 	user := &User{
@@ -123,6 +126,18 @@ func AuthUserByEmail(email string) (*Token, error) {
 
 	token.User = user
 	return token, nil
+}
+
+func Signout(token string) error {
+	// clear cache
+	cachePrefix := conf.TokenCachePrefix()
+	_, err := app.Cache().Del(ctx, cachePrefix+token).Result()
+	if err != nil {
+		return err
+	}
+
+	//delete token record
+	return app.DB().Where("value = ?", token).Delete(&Token{}).Error
 }
 
 func CreateAdminUser(email, name, avatar string) (*User, error) {
@@ -161,6 +176,10 @@ func GetUserByEmail(email string) (*User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+type UpdateNameForm struct {
+	Name string `validate:"required,min:2,max:12" form:"name" json:"name"`
 }
 
 func UpdateUserName(userID int, newName string) error {

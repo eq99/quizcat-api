@@ -14,12 +14,8 @@ import (
 
 var ctx = context.Background()
 
-type EmailForm struct {
-	Email string `validate:"required" form:"email" json:"email"`
-}
-
 func SendCaptchaByEmail(c *fiber.Ctx) error {
-	emailForm := &EmailForm{}
+	emailForm := &dao.EmailForm{}
 
 	if err := c.BodyParser(emailForm); err != nil {
 		app.Log().Println(err)
@@ -97,12 +93,29 @@ func AuthWithEmail(c *fiber.Ctx) error {
 	return c.JSON(token)
 }
 
-type UpdateNameForm struct {
-	Name string `validate:"required,min:2,max:12" form:"name" json:"name"`
+func Signout(c *fiber.Ctx) error {
+	token := c.Get("Authorization")
+
+	if token == "" {
+		app.Log().Println("no token in header.")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"msg": "not unauthorized",
+		})
+	}
+
+	if err := dao.Signout(token); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"msg": "server error",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"msg": "signout success",
+	})
 }
 
 func PostCheckName(c *fiber.Ctx) error {
-	form := &UpdateNameForm{}
+	form := &dao.UpdateNameForm{}
 	if err := c.BodyParser(form); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"msg": err.Error(),
@@ -123,7 +136,7 @@ func PostCheckName(c *fiber.Ctx) error {
 func PatchName(c *fiber.Ctx) error {
 	user := c.Locals("user").(*dao.User)
 
-	form := &UpdateNameForm{}
+	form := &dao.UpdateNameForm{}
 	if err := c.BodyParser(form); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"msg": err.Error(),
