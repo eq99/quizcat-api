@@ -20,6 +20,9 @@ func main() {
 			if err := app.DB().AutoMigrate(
 				&dao.User{},
 				&dao.Token{},
+				&dao.InterviewBook{},
+				&dao.IQuestion{},
+				&dao.IComment{},
 				&dao.Exercise{},
 				&dao.Quiz{},
 				&dao.Solution{},
@@ -33,21 +36,22 @@ func main() {
 		},
 	}
 
-	var cmdQuizToSolution = &cobra.Command{
-		Use:   "qtos",
-		Short: "migrate solutions",
-		Long:  `migrate solutions`,
-		Run: func(cmd *cobra.Command, args []string) {
-			quizToSolution()
-		},
-	}
+	// var cmdQuizToSolution = &cobra.Command{
+	// 	Use:   "qtos",
+	// 	Short: "migrate solutions",
+	// 	Long:  `migrate solutions`,
+	// 	Run: func(cmd *cobra.Command, args []string) {
+	// 		quizToSolution()
+	// 	},
+	// }
 
 	/****************** root cmd *******************/
 	var rootCmd = &cobra.Command{Use: "cli"}
-	rootCmd.AddCommand(cmdMigrate, cmdQuizToSolution)
+	rootCmd.AddCommand(cmdMigrate)
 	rootCmd.Execute()
 }
 
+/*
 func quizToSolution() {
 	var quizzes []*dao.Quiz
 	if err := app.DB().Find(&quizzes).Error; err != nil {
@@ -70,3 +74,4 @@ func quizToSolution() {
 
 	fmt.Println("create solutions success.")
 }
+*/

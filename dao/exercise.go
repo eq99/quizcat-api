@@ -76,7 +76,7 @@ type SaveSolutionForm struct {
 }
 
 func GetOrSaveSolution(form *SaveSolutionForm, userID int) (*Solution, error) {
-	solution := &Solution{}
+	solution := &Solution{UserID: userID, QuizID: form.QuizID}
 
 	if err := app.DB().
 		Where("user_id = ? AND quiz_id = ?", userID, form.QuizID).

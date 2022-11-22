@@ -29,6 +29,12 @@ func main() {
 	apiRouter.Post("/solutions", m.Auth, api.GetOrSaveSolution)
 	apiRouter.Get("/solutions", api.GetSolutionsByQuizId)
 
+	apiRouter.Get("/ibooks", api.GetInterviewBooks)
+	apiRouter.Get("/iquestions", api.GetIQuestionsByBookId)
+	apiRouter.Get("/icomments", api.GetICommentsByQuestionId)
+	apiRouter.Get("/my/icomments", api.GetICommentsByUserId)
+	apiRouter.Post("/icomments", m.Auth, api.SaveIComment)
+
 	apiRouter.Get("/wordsets", api.GetWordSets)
 	apiRouter.Get("/wordsets/:setID", api.GetWordSet)
 
